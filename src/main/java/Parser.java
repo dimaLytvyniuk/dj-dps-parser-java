@@ -15,7 +15,8 @@ public class Parser {
 
     private static Pattern lineRE = Pattern.compile("[\r\n\t\\s]*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
-    private static Pattern lineCommentRE = Pattern.compile("//[\\w\\S.\t:,;\'\"(){}\\[\\]0-9-_](?:[\n\r]*)", Pattern.CASE_INSENSITIVE);
+
+    private static Pattern lineCommentRE = Pattern.compile("//[\\w\\S .\t:,;\'\"(){}\\[\\]0-9-_]*(?:[\n\r]*)", Pattern.CASE_INSENSITIVE);
     private static Pattern inlineCommentRE = Pattern.compile("/\\*[\\w\\W\\\\b\\.\t:,;\'\"\\(\\)\\{\\}\\[\\]\\*0-9-_]*(?:\\*/)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
     private static Pattern commandSplitRE = Pattern.compile("(\\))([a-zA-Z@])", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -30,7 +31,7 @@ public class Parser {
 
     private static Pattern scriptRE = Pattern.compile("(\\<\\?([^?]|(\\?+[^?\\>]))*\\?\\>)");
 
-    private static Pattern bindableRE = Pattern.compile("([a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*)");
+    private static Pattern bindableRE = Pattern.compile("(\\{\\{[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*)\\}\\}");
 
     private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
 
@@ -44,7 +45,7 @@ public class Parser {
         defaultPropName = new HashMap<>();
     }
 
-    public void parse(String str) throws ParserError {
+    public String parse(String str) throws ParserError {
         incomingStr = replaceAllRegex(str);
 
         try {
@@ -56,12 +57,17 @@ public class Parser {
 
             incomingStr = String.join(";", arrayTmp);
             incomingStr = incomingStr.replace(";;", ";");
+
+            ArrayList<String> script = new ArrayList<>();
+
         } catch (Exception e) {
             if (e.getClass() != ParserError.class)
                 throw new ParserError(e.toString(), -1, 0);
             else
                 throw  e;
         }
+
+        return incomingStr;
     }
 
     private String validationCommand(String cmd, int i) throws ParserError {
@@ -74,8 +80,8 @@ public class Parser {
             Matcher matcherParamsRE = paramsRE.matcher(cmd);
 
             ArrayList<String> params = new ArrayList<>();
-            while (matcher.find()) {
-                params.add(getParamForCmd(matcher.group(), cmdName));
+            while (matcherParamsRE.find()) {
+                params.add(getParamForCmd(matcherParamsRE.group(), cmdName));
             }
 
             return String.format("\"%s\"%s", cmdName, params.get(0));
@@ -121,7 +127,7 @@ public class Parser {
             matcher.appendReplacement(buffer, parserUtils.varIndex(matcher.group()));
         }
         matcher.appendTail(buffer);
-        return matcher.toString();
+        return buffer.toString();
     }
 
     private String replacePushUrl(String str, Pattern pattern) {
@@ -131,12 +137,14 @@ public class Parser {
             matcher.appendReplacement(buffer, parserUtils.pushUrl(matcher.group()));
         }
         matcher.appendTail(buffer);
-        return matcher.toString();
+        return buffer.toString();
     }
 
     private String replaceAllRegex(String str) {
         str = replaceVarIndex(str, scriptRE);
+
         str = replacePushUrl(str, urlRE);
+
         str = bindableRE
                 .matcher(str)
                 .replaceAll("\"$1\"");
@@ -144,7 +152,9 @@ public class Parser {
         str = lineCommentRE
                 .matcher(str)
                 .replaceAll("");
+
         str = replaceVarIndex(str, valuesRE);
+
         str = lineRE
                 .matcher(str)
                 .replaceAll("");
@@ -158,14 +168,14 @@ public class Parser {
         str = nonbrackedParamsRE
                 .matcher(str)
                 .replaceAll("({$1})");
-        str = propertyNameRE
+       str = propertyNameRE
                 .matcher(str)
                 .replaceAll("\"$1\"");
         str = str.replaceAll("\'","\"");
-        str = emptyPropsListRE
+       str = emptyPropsListRE
                 .matcher(str)
                 .replaceAll("({})");
-        str = str.replaceAll("\\(", ":");
+         str = str.replaceAll("\\(", ":");
         str = str.replaceAll("\\)", "");
 
         return str;
