@@ -1,6 +1,12 @@
 package utils;
 
 public class LineMapper {
+    /**
+     * Search where was Exception
+     * @param strs Command
+     * @param num
+     * @return line where error
+     */
     public static int findLineOfCommandStart(String strs, int num) {
         if (num < 0)
             return -1;
