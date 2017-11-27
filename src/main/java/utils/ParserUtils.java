@@ -28,7 +28,7 @@ public class ParserUtils {
                 matcher.appendReplacement(buffer, "");
             }
             matcher.appendTail(buffer);
-            key = matcher.toString();
+            key = buffer.toString();
 
             key = pattern2.matcher(key).replaceAll("");
             key = key.replaceAll("\r", "\\r")

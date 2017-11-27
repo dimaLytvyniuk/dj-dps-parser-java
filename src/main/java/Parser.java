@@ -1,4 +1,5 @@
 import exceptions.ParserError;
+import parser_commands.ExecutionCommand;
 import utils.LineMapper;
 import utils.ParserUtils;
 
@@ -31,9 +32,9 @@ public class Parser {
 
     private static Pattern scriptRE = Pattern.compile("(\\<\\?([^?]|(\\?+[^?\\>]))*\\?\\>)");
 
-    private static Pattern bindableRE = Pattern.compile("(\\{\\{[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*)\\}\\}");
-
-    private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
+    private static Pattern bindableRE = Pattern.compile("(\\{\\{[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*\\}\\})");
+                                   //const bindableRE = /({{[a-zA-Z\$\_]+[a-zA-Z0-9\$\_\.\[\]\"\']*}})/g;
+        private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
 
     private ParserUtils parserUtils;
 
@@ -58,8 +59,9 @@ public class Parser {
             incomingStr = String.join(";", arrayTmp);
             incomingStr = incomingStr.replace(";;", ";");
 
-            ArrayList<String> script = new ArrayList<>();
+            ArrayList<String> script = putVarsInsteadIndex();
 
+            int y = 0;
         } catch (Exception e) {
             if (e.getClass() != ParserError.class)
                 throw new ParserError(e.toString(), -1, 0);
@@ -179,5 +181,23 @@ public class Parser {
         str = str.replaceAll("\\)", "");
 
         return str;
+    }
+
+    private ArrayList<String> putVarsInsteadIndex() {
+        ArrayList<String> script = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\^[0-9]+");
+        String[] cmd = incomingStr.split(";");
+
+        for (int i = 0; i < cmd.length; i++) {
+            Matcher matcher = pattern.matcher(cmd[i]);
+            StringBuffer buffer = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(buffer, parserUtils.varValue(matcher.group()));
+            }
+            matcher.appendTail(buffer);
+            script.add(buffer.toString());
+        }
+
+        return script;
     }
 }
