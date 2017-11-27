@@ -1,10 +1,12 @@
 import exceptions.ParserError;
 import parser_commands.ExecutionCommand;
+import parser_commands.SyntaxCommand;
 import utils.LineMapper;
 import utils.ParserUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,21 +35,56 @@ public class Parser {
     private static Pattern scriptRE = Pattern.compile("(\\<\\?([^?]|(\\?+[^?\\>]))*\\?\\>)");
 
     private static Pattern bindableRE = Pattern.compile("(\\{\\{[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*\\}\\})");
-                                   //const bindableRE = /({{[a-zA-Z\$\_]+[a-zA-Z0-9\$\_\.\[\]\"\']*}})/g;
-        private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
+    private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
 
-    private ParserUtils parserUtils;
+    private ParserUtils parserUtils;// Parser util class
 
-    private String incomingStr;
-    Map<String, String> defaultPropName;
+    private String incomingStr;// incoming script to parse
 
-    public Parser() {
+    private Map<String, String> defaultPropName;// first command, second PropName
+    private Map<String, String> keywords;// first synomin name, second commandName
+    private Map<String, SyntaxCommand> commands;// first command name, second command
+
+    /**
+     * Initialize fields
+     * @param listCommands ArrayList of SyntaxCommand with command that will be used in parser
+     */
+    public Parser(ArrayList<SyntaxCommand> listCommands) {
         parserUtils = new ParserUtils();
         defaultPropName = new HashMap<>();
+        keywords = new HashMap<>();
+        commands = new HashMap<>();
+
+        config(listCommands);
     }
 
-    public String parse(String str) throws ParserError {
+    /**
+     * Config maps with default properties names, keywords and commands
+     * @param listCommands ArrayList of SyntaxCommand with command that will be used in parser
+     */
+    private void config(ArrayList<SyntaxCommand> listCommands) {
+        listCommands.forEach(command -> {
+            command.getDefaultProperty().forEach((k, v) -> {
+                defaultPropName.put(k, v);
+            });
+
+            command.getSynonims().forEach((k, v) -> {
+                keywords.put(k, v);
+            });
+
+            commands.put(command.getName(), command);
+        });
+    }
+
+    /**
+     * Parse dj-dps script
+     * @param str Script to parse
+     * @return List of ExecutionCommands from script
+     * @throws ParserError
+     */
+    public List<ExecutionCommand> parse(String str) throws ParserError {
         incomingStr = replaceAllRegex(str);
+        ArrayList<ExecutionCommand> executionCommands = new ArrayList<>();
 
         try {
             String[] arrayTmp = incomingStr.split(";");
@@ -61,7 +98,8 @@ public class Parser {
 
             ArrayList<String> script = putVarsInsteadIndex();
 
-            int y = 0;
+            for (int i = 0; i < script.size(); i++)
+                executionCommands.add(creatExecutionCommand(script.get(i)));
         } catch (Exception e) {
             if (e.getClass() != ParserError.class)
                 throw new ParserError(e.toString(), -1, 0);
@@ -69,9 +107,16 @@ public class Parser {
                 throw  e;
         }
 
-        return incomingStr;
+        return executionCommands;
     }
 
+    /**
+     * Validate command
+     * @param cmd command
+     * @param i index of command
+     * @return JSON representation of command
+     * @throws ParserError
+     */
     private String validationCommand(String cmd, int i) throws ParserError {
         try {
             Matcher matcher = commandNameRE.matcher(cmd);
@@ -92,6 +137,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Replace default properties names in commands
+     * @param item params for command
+     * @param cmdName name of command
+     * @return JSON representation of params for command
+     * @throws Exception
+     */
     private String getParamForCmd(String item, String cmdName) throws Exception {
         try {
             Pattern inParams1 = Pattern.compile("\\:\\{\\^");
@@ -122,6 +174,12 @@ public class Parser {
         return item;
     }
 
+    /**
+     * Replce Value of param by index
+     * @param str Command
+     * @param pattern Pattern to use in replacement
+     * @return Command with changed params
+     */
     private String replaceVarIndex(String str, Pattern pattern) {
         Matcher matcher = pattern.matcher(str);
         StringBuffer buffer = new StringBuffer();
@@ -132,6 +190,12 @@ public class Parser {
         return buffer.toString();
     }
 
+    /**
+     * Replave push url
+     * @param str command
+     * @param pattern Pattern to use in replacement
+     * @return Command with correct url
+     */
     private String replacePushUrl(String str, Pattern pattern) {
         Matcher matcher = pattern.matcher(str);
         StringBuffer buffer = new StringBuffer();
@@ -142,6 +206,11 @@ public class Parser {
         return buffer.toString();
     }
 
+    /**
+     * Do all regex replacements
+     * @param str script
+     * @return Script split on commands by ';'
+     */
     private String replaceAllRegex(String str) {
         str = replaceVarIndex(str, scriptRE);
 
@@ -183,6 +252,10 @@ public class Parser {
         return str;
     }
 
+    /**
+     * Put var value instead index
+     * @return JSON object representations of commands
+     */
     private ArrayList<String> putVarsInsteadIndex() {
         ArrayList<String> script = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\^[0-9]+");
@@ -199,5 +272,23 @@ public class Parser {
         }
 
         return script;
+    }
+
+    /**
+     * Create Execution command
+     * @param str Command
+     * @return Execution for concrete command
+     * @throws ParserError
+     */
+    private ExecutionCommand creatExecutionCommand(String str) throws ParserError {
+        try {
+            int index = str.indexOf(":");
+            String cmd = str.substring(0, index).replaceAll("\"", "");
+            String params = str.substring(index + 1, str.length());
+            return new ExecutionCommand(commands.get(keywords.get(cmd)), params);
+        }
+        catch (Exception e) {
+            throw new ParserError(e.toString(), -1, 0);
+        }
     }
 }
