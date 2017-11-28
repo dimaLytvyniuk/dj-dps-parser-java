@@ -11,6 +11,8 @@ public class Append extends SyntaxCommand {
 
         name = "append";
 
+        synonims.put("append", "append");
+
         defaultProperty.put("append", "value");
 
         help = "{\n" +

@@ -5,12 +5,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParserUtils {
+    /**
+     * List of values of params
+     */
     private ArrayList<String> values;
 
     public ParserUtils() {
         values = new ArrayList<>();
     }
 
+    /**
+     * Replace param values on index in ArrayList values
+     * @param tag Command
+     * @return Changed command
+     */
     public String varIndex(String tag) {
         Pattern pattern1 = Pattern.compile("(?:\\?)(javascript|json|text|html|dps|xml|csv)");
         Pattern pattern2 = Pattern.compile("(^\\?)|(\\?$)");
@@ -47,16 +55,31 @@ public class ParserUtils {
 
     }
 
+    /**
+     * Push URL
+     * @param tag coommand
+     * @return Changed command
+     */
     public String pushUrl(String tag) {
         values.add(tag);
 
         return String.format("^%d", values.size() - 1);
     }
 
+    /**
+     * Return url
+     * @param key command
+     * @return URL for command
+     */
     public String getUrl(String key) {
         return values.get(Integer.parseInt(key.substring(1)));
     }
 
+    /**
+     * Replace index of param value on value of param
+     * @param tag Command
+     * @return Changed command
+     */
     public String varValue(String tag) {
         String key = tag.substring(1);
         String r = values.get(Integer.parseInt(key));

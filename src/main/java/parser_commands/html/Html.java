@@ -9,7 +9,9 @@ public class Html extends SyntaxCommand {
     public Html() {
         super();
 
-        name = "Html";
+        name = "html";
+
+        synonims.put("html", "html");
 
         help = "{\n" +
                 "    synopsis:\"Set 'html' type for contet\",\n" +
