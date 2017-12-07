@@ -39,9 +39,10 @@ public class ParserUtils {
             key = buffer.toString();
 
             key = pattern2.matcher(key).replaceAll("");
-            key = key.replaceAll("\r", "\\r")
-                    .replaceAll("\n", "\\n")
-                    .replaceAll("\t", "\\t");
+            key = key.replace("\r", "\\\\r")
+                     .replace("\n", "\\\\n")
+                     .replace("\t", "\\\\t")
+                     .replace("\"", "\\\\\"");
 
             values.add(key);
 
