@@ -2,6 +2,7 @@ import exceptions.ParserError;
 import parser_commands.ExecutionCommand;
 import parser_commands.SyntaxCommand;
 import parser_commands.context.Context;
+import parser_commands.dps.ReturnCommand;
 import parser_commands.html.Html;
 import parser_commands.html.WrapHtml;
 import parser_commands.text.Append;
@@ -21,24 +22,62 @@ public class Main {
         synataxCommands.add(new WrapHtml());
         synataxCommands.add(new Append());
         synataxCommands.add(new Set());
+        synataxCommands.add(new ReturnCommand());
 
         Parser parser = new Parser(synataxCommands);
-        String str = "set('tags')\n" +
+        String str = "<?html\n" +
+                "   <h4>Relevant News</h4>\n" +
+                "    <div    class=\"row\" \n" +
+                "            style=\" position:relative;\n" +
+                "                    margin:0;\" \n" +
+                "    >\n" +
+                "        <div    class= \"column medium-3 left\"\n" +
+                "                 style=\"color: #333;\n" +
+                "                        margin: -2px -5px 0 1em;\n" +
+                "                        font-size: small;\n" +
+                "                        border: 2px solid #333;\n" +
+                "                        border-bottom: none;\n" +
+                "                        border-radius: 10px 10px 0 0;\n" +
+                "                        padding: 5.5px 1em;\n" +
+                "                        top: 2px;\n" +
+                "                        background: #ffffff;\n" +
+                "                        cursor:pointer;\n" +
+                "                        z-index:5\"\n" +
+                "                ng-click = \"API.emit('setFeedView')\"        \n" +
+                "        >\n" +
+                "            as Feed            \n" +
+                "        </div>    \n" +
+                "        <div    class=\"column medium-3 left\" \n" +
+                "                style=\" border: 1px solid #999;\n" +
+                "                        font-size: small;\n" +
+                "                        border-bottom: none;\n" +
+                "                        border-radius: 10px 10px 0 0;\n" +
+                "                        padding: 5px 1em;\n" +
+                "                        top: 0px;\n" +
+                "                        background: #ffffff;\n" +
+                "                        color: #999;\n" +
+                "                        cursor:pointer;\"\n" +
+                "                ng-click = \"API.emit('setTimelineView')\"        \n" +
+                "        >\n" +
+                "            as Timeline            \n" +
+                "        </div>    \n" +
+                "    </div>\n" +
+                "    <div    class=\"row\" \n" +
+                "            style=\" height: 5px;\n" +
+                "                    margin: 0;\n" +
+                "                    border-top: 2px solid #999;\n" +
+                "                    background: #fff;\"\n" +
+                "    >\n" +
                 "\n" +
-                "<?html\n" +
-                "  DB totals:<br/>datasets:&nbsp;\n" +
-                "?>\n" +
-                "// test\n" +
+                "    </div>\n" +
+                "?> \n" +
                 "\n" +
-                "/*\n" +
-                "  test\n" +
-                "*/\n" +
-                "\n" +
-                "append({{datasets}})\n" +
                 "wrap(\n" +
-                "  tag:'div', style:'margin:0'\n" +
-                ")\n" +
-                "html()";
+                "        tag:'div', \n" +
+                "        class:'row', \n" +
+                "        style:'margin:0.25em 0.2em; padding:0.5em;'\n" +
+                "    )\n" +
+                "return()";
 
         try {
             List<ExecutionCommand> list = parser.parse(str);
@@ -47,7 +86,10 @@ public class Main {
                 if (list.get(i).getParams() != null)
                     System.out.println(list.get(i).getParams().toString());
             }
-            System.out.println(list.get(4).getParams().getString("style"));
+            //System.out.println(list.get(4).getParams().getString("style"));
+            //System.out.println("\n\n".replace("\n", "\\\\n"));
+
+
         }
         catch (ParserError e) {
             System.out.println(e.getMessage());

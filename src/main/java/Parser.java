@@ -83,6 +83,12 @@ public class Parser {
      * @throws ParserError
      */
     public List<ExecutionCommand> parse(String str) throws ParserError {
+        String[] strings = str.split("\n");
+        for (int i = 0; i < strings.length; i++)
+            strings[i] = strings[i].trim();
+
+        str = String.join("\n", strings);
+
         incomingStr = replaceAllRegex(str);
         ArrayList<ExecutionCommand> executionCommands = new ArrayList<>();
 
