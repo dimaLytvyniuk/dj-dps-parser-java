@@ -1,9 +1,11 @@
-package parser_commands.var;
+package dj_dps_parser.parser_commands.var;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 27.11.17.
+/**.
+ * Class that represent command "set" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/var/set.js">"set" in js</a>
  */
 public class Set extends SyntaxCommand {
     public Set() {

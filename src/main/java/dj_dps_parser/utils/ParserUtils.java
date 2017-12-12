@@ -1,9 +1,12 @@
-package utils;
+package dj_dps_parser.utils;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ParserUtils have util methods which help to parse data processing script to JSON.
+ */
 public class ParserUtils {
     /**
      * List of values of params
@@ -15,7 +18,7 @@ public class ParserUtils {
     }
 
     /**
-     * Replace param values on index in ArrayList values
+     * Replace param values on index in ArrayList values.
      * @param tag Command
      * @return Changed command
      */
@@ -57,7 +60,7 @@ public class ParserUtils {
     }
 
     /**
-     * Push URL
+     * Push URL.
      * @param tag coommand
      * @return Changed command
      */
@@ -68,7 +71,7 @@ public class ParserUtils {
     }
 
     /**
-     * Return url
+     * Return url.
      * @param key command
      * @return URL for command
      */
@@ -77,7 +80,7 @@ public class ParserUtils {
     }
 
     /**
-     * Replace index of param value on value of param
+     * Replace index of param value on value of param.
      * @param tag Command
      * @return Changed command
      */

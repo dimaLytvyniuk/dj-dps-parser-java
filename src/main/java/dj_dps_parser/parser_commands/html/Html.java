@@ -1,9 +1,11 @@
-package parser_commands.html;
+package dj_dps_parser.parser_commands.html;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 27.11.17.
+/**.
+ * Class that represent command "html" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/html/html.js">"html" in js</a>
  */
 public class Html extends SyntaxCommand {
     public Html() {

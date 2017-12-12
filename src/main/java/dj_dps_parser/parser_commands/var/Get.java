@@ -1,9 +1,11 @@
-package parser_commands.var;
+package dj_dps_parser.parser_commands.var;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 07.12.17.
+/**.
+ * Class that represent command "get" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/var/get.js">"get" in js</a>
  */
 public class Get extends SyntaxCommand {
 

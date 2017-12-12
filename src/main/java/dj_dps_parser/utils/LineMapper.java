@@ -1,10 +1,14 @@
-package utils;
+package dj_dps_parser.utils;
 
+/**
+ * Class that have methods which with searching number of
+ * line where were error.
+ */
 public class LineMapper {
     /**
      * Search where was Exception
-     * @param strs Command
-     * @param num
+     * @param strs Commands
+     * @param num number of command
      * @return line where error
      */
     public static int findLineOfCommandStart(String strs, int num) {

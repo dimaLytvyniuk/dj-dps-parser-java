@@ -1,9 +1,11 @@
-package parser_commands.text;
+package dj_dps_parser.parser_commands.text;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 27.11.17.
+/**.
+ * Class that represent command "append" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/text/append.js">"append" in js</a>
  */
 public class Append extends SyntaxCommand {
     public Append() {

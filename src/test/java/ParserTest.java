@@ -1,19 +1,18 @@
+import dj_dps_parser.Parser;
 import org.junit.Test;
-import parser_commands.ExecutionCommand;
-import parser_commands.SyntaxCommand;
-import parser_commands.context.Context;
-import parser_commands.dps.ReturnCommand;
-import parser_commands.html.Html;
-import parser_commands.html.WrapHtml;
-import parser_commands.javascript.Eval;
-import parser_commands.text.Append;
-import parser_commands.var.Get;
-import parser_commands.var.Set;
+import dj_dps_parser.parser_commands.ExecutionCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.context.Context;
+import dj_dps_parser.parser_commands.dps.ReturnCommand;
+import dj_dps_parser.parser_commands.html.Html;
+import dj_dps_parser.parser_commands.html.WrapHtml;
+import dj_dps_parser.parser_commands.javascript.Eval;
+import dj_dps_parser.parser_commands.text.Append;
+import dj_dps_parser.parser_commands.var.Get;
+import dj_dps_parser.parser_commands.var.Set;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by dima on 07.12.17.

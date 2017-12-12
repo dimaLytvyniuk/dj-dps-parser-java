@@ -1,12 +1,13 @@
-package parser_commands.javascript;
+package dj_dps_parser.parser_commands.javascript;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 07.12.17.
+/**.
+ * Class that represent command "eval" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/javascript/eval.js">"eval" in js</a>
  */
 public class Eval extends SyntaxCommand {
-
     public Eval() {
         super();
 

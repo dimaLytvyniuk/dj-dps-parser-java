@@ -1,9 +1,11 @@
-package parser_commands.dps;
+package dj_dps_parser.parser_commands.dps;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 07.12.17.
+/**.
+ * Class that represent command "return" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/dps/return.js">"return" in js</a>
  */
 public class ReturnCommand extends SyntaxCommand {
     public ReturnCommand() {

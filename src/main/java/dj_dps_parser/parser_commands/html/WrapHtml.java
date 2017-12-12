@@ -1,11 +1,11 @@
-package parser_commands.html;
+package dj_dps_parser.parser_commands.html;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-import java.util.HashMap;
-
-/**
- * Created by dima on 27.11.17.
+/**.
+ * Class that represent command "wrapHtml" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/html/wrapHtml.js">"wrapHtml" in js</a>
  */
 public class WrapHtml extends SyntaxCommand {
     public WrapHtml() {

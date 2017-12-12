@@ -1,9 +1,11 @@
-package parser_commands.context;
+package dj_dps_parser.parser_commands.context;
 
-import parser_commands.SyntaxCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
 
-/**
- * Created by dima on 27.11.17.
+/**.
+ * Class that represent command "context" from data processing script
+ * @see SyntaxCommand
+ * @see <a href="https://github.com/boldak/dj-dps-commands/blob/master/src/context/context.js">"context" in js</a>
  */
 public class Context extends SyntaxCommand {
     public Context() {
