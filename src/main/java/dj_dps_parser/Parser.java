@@ -1,8 +1,10 @@
-import exceptions.ParserError;
-import parser_commands.ExecutionCommand;
-import parser_commands.SyntaxCommand;
-import utils.LineMapper;
-import utils.ParserUtils;
+package dj_dps_parser;
+
+import dj_dps_parser.exceptions.ParserError;
+import dj_dps_parser.parser_commands.ExecutionCommand;
+import dj_dps_parser.parser_commands.SyntaxCommand;
+import dj_dps_parser.utils.LineMapper;
+import dj_dps_parser.utils.ParserUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 public class Parser {
     private static Pattern valuesRE = Pattern.compile("'((?:\\\\[\'bfnrt/\\\\]|\\\\u[a-fA-F0-9]{4}|[^\'\\\\])*)'|\"((?:\\\\[\"bfnrt/\\\\]|\\\\u[a-fA-F0-9]{4}|[^\"\\\\])*)\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -37,7 +37,7 @@ public class Parser {
     private static Pattern bindableRE = Pattern.compile("(\\{\\{[a-zA-Z\\$_]+[a-zA-Z0-9\\$_\\.\\[\\]\"\']*\\}\\})");
     private static Pattern urlRE = Pattern.compile("((https?://)([a-zA-Z0-9]+[a-zA-Z0-9_-]*)(:\\d{0,4})?([a-zA-Z0-9_\\-/%=\\{\\}\\?\\+\\&\\.:]*))");
 
-    private ParserUtils parserUtils;// Parser util class
+    private ParserUtils parserUtils;// dj_dps_parser.Parser util class
 
     private String incomingStr;// incoming script to parse
 
@@ -46,7 +46,7 @@ public class Parser {
     private Map<String, SyntaxCommand> commands;// first command name, second command
 
     /**
-     * Initialize fields
+     * Config Parser.
      * @param listCommands ArrayList of SyntaxCommand with command that will be used in parser
      */
     public Parser(ArrayList<SyntaxCommand> listCommands) {
@@ -59,7 +59,7 @@ public class Parser {
     }
 
     /**
-     * Config maps with default properties names, keywords and commands
+     * Config maps with default properties names, keywords and commands.
      * @param listCommands ArrayList of SyntaxCommand with command that will be used in parser
      */
     private void config(ArrayList<SyntaxCommand> listCommands) {
@@ -77,10 +77,10 @@ public class Parser {
     }
 
     /**
-     * Parse dj-dps script
+     * Parse data processing script.
      * @param str Script to parse
      * @return List of ExecutionCommands from script
-     * @throws ParserError
+     * @throws ParserError if was error while data processing script was parsed.
      */
     public List<ExecutionCommand> parse(String str) throws ParserError {
         String[] strings = str.split("\n");
